@@ -103,14 +103,14 @@ function AgendaEventRenderer() {
 		var colCnt = getColCnt(),
 			minMinute = getMinMinute(),
 			maxMinute = getMaxMinute(),
-			d = addMinutes(cloneDate(t.visStart), minMinute),
+			d = t.visStart.clone().addMinutes(minMinute),
 			visEventEnds = $.map(events, slotEventEnd),
 			i, col,
 			j, level,
 			k, seg,
 			segs=[];
 		for (i=0; i<colCnt; i++) {
-			col = stackSegs(sliceSegs(events, visEventEnds, d, addMinutes(cloneDate(d), maxMinute-minMinute)));
+			col = stackSegs(sliceSegs(events, visEventEnds, d, d.clone().addMinutes(maxMinute-minMinute)));
 			countForwardSegs(col);
 			for (j=0; j<col.length; j++) {
 				level = col[j];
@@ -121,7 +121,7 @@ function AgendaEventRenderer() {
 					segs.push(seg);
 				}
 			}
-			addDays(d, 1, true);
+			d.addDays(1);
 		}
 		return segs;
 	}
@@ -129,9 +129,9 @@ function AgendaEventRenderer() {
 	
 	function slotEventEnd(event) {
 		if (event.end) {
-			return cloneDate(event.end);
+			return event.end.clone();
 		}else{
-			return addMinutes(cloneDate(event.start), opt('defaultEventMinutes'));
+			return event.start.clone().addMinutes(opt('defaultEventMinutes'));
 		}
 	}
 	
@@ -383,8 +383,8 @@ function AgendaEventRenderer() {
 						if (!cell.row) {
 							// on full-days
 							renderDayOverlay(
-								addDays(cloneDate(event.start), dayDelta),
-								addDays(exclEndDay(event), dayDelta)
+								event.start.clone().addDays(dayDelta).clearTime(),
+								exclEndDay(event).addDays(dayDelta).clearTime()
 							);
 							resetElement();
 						}else{
@@ -396,8 +396,7 @@ function AgendaEventRenderer() {
 									setOuterHeight(
 										eventElement,
 										slotHeight * Math.round(
-											(event.end ? ((event.end - event.start) / MINUTE_MS) : opt('defaultEventMinutes'))
-											/ opt('slotMinutes')
+											(event.end ? event.start.diffMinutes(event.end) : opt('defaultEventMinutes')) / opt('slotMinutes')
 										)
 									);
 									eventElement.draggable('option', 'grid', [colWidth, 1]);
@@ -490,8 +489,8 @@ function AgendaEventRenderer() {
 								eventElement.draggable('option', 'grid', null);
 							}
 							renderDayOverlay(
-								addDays(cloneDate(event.start), dayDelta),
-								addDays(exclEndDay(event), dayDelta)
+								event.start.clone().addDays(dayDelta).clearTime(),
+								exclEndDay(event).addDays(dayDelta).clearTime()
 							);
 						}else{
 							// on slots
@@ -527,10 +526,10 @@ function AgendaEventRenderer() {
 			}
 		});
 		function updateTimeText(minuteDelta) {
-			var newStart = addMinutes(cloneDate(event.start), minuteDelta);
+			var newStart = event.start.clone().addMinutes(minuteDelta);
 			var newEnd;
 			if (event.end) {
-				newEnd = addMinutes(cloneDate(event.end), minuteDelta);
+				newEnd = event.end.clone().addMinutes(minuteDelta);
 			}
 			timeElement.text(formatDates(newStart, newEnd, opt('timeFormat')));
 		}
@@ -572,7 +571,7 @@ function AgendaEventRenderer() {
 						formatDates(
 							event.start,
 							(!slotDelta && !event.end) ? null : // no change, so don't display time range
-								addMinutes(eventEnd(event), opt('slotMinutes')*slotDelta),
+								eventEnd(event).addMinutes(opt('slotMinutes')*slotDelta),
 							opt('timeFormat')
 						)
 					);

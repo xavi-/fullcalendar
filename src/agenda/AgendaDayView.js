@@ -19,13 +19,13 @@ function AgendaDayView(element, calendar) {
 	
 	function render(date, delta) {
 		if (delta) {
-			addDays(date, delta);
+			date.addDays(delta);
 			if (!opt('weekends')) {
 				skipWeekend(date, delta < 0 ? -1 : 1);
 			}
 		}
-		var start = cloneDate(date, true);
-		var end = addDays(cloneDate(start), 1);
+		var start = date.clone().clearTime();
+		var end = start.clone().addDays(1);
 		t.title = formatDate(date, opt('titleFormat'));
 		t.start = t.visStart = start;
 		t.end = t.visEnd = end;

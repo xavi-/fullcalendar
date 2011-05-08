@@ -438,7 +438,7 @@ function DayEventRenderer() {
 						}
 					}
 					dayDelta = (r*7 + c*dis+dit) - (origCell.row*7 + origCell.col*dis+dit);
-					var newEnd = addDays(eventEnd(event), dayDelta, true);
+					var newEnd = eventEnd(event).addDays(dayDelta);
 					if (dayDelta) {
 						eventCopy.end = newEnd;
 						var oldHelpers = helpers;
@@ -456,7 +456,11 @@ function DayEventRenderer() {
 						}
 					}
 					clearOverlays();
-					renderDayOverlay(event.start, addDays(cloneDate(newEnd), 1)); // coordinate grid already rebuild at hoverListener.start
+					renderDayOverlay(
+						event.start.clone().clearTime(),
+						newEnd.clone().addDays(1).clearTime() // TODO: use util
+					);
+					// coordinate grid already rebuild at hoverListener.start
 				}
 			}, ev);
 			

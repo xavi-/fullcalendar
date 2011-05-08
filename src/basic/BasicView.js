@@ -184,7 +184,7 @@ function BasicView(element, calendar, viewName) {
 	function updateCells(firstTime) {
 		var dowDirty = firstTime || rowCnt == 1; // could the cells' day-of-weeks need updating?
 		var month = t.start.getMonth();
-		var today = clearTime(new Date());
+		var today = new MightyDate().clearTime();
 		var cell;
 		var date;
 		var row;
@@ -206,7 +206,7 @@ function BasicView(element, calendar, viewName) {
 			}else{
 				cell.addClass('fc-other-month');
 			}
-			if (+date == +today) {
+			if (date.equals(today)) {
 				cell.addClass(tm + '-state-highlight fc-today');
 			}else{
 				cell.removeClass(tm + '-state-highlight fc-today');
@@ -296,29 +296,30 @@ function BasicView(element, calendar, viewName) {
 	
 	
 	function renderDayOverlay(overlayStart, overlayEnd, refreshCoordinateGrid) { // overlayEnd is exclusive
+		// TODO: get straight whether caller needs to do clearTime or not
 		if (refreshCoordinateGrid) {
 			coordinateGrid.build();
 		}
-		var rowStart = cloneDate(t.visStart);
-		var rowEnd = addDays(cloneDate(rowStart), colCnt);
+		var rowStart = t.visStart.clone();
+		var rowEnd = rowStart.clone().addDays(colCnt);
 		for (var i=0; i<rowCnt; i++) {
-			var stretchStart = new Date(Math.max(rowStart, overlayStart));
-			var stretchEnd = new Date(Math.min(rowEnd, overlayEnd));
-			if (stretchStart < stretchEnd) {
+			var stretchStart = overlayStart.before(rowStart) ? rowStart : overlayStart;
+			var stretchEnd = overlayEnd.after(rowEnd) ? rowEnd : overlayEnd;
+			if (stretchStart.before(stretchEnd)) {
 				var colStart, colEnd;
 				if (rtl) {
-					colStart = dayDiff(stretchEnd, rowStart)*dis+dit+1;
-					colEnd = dayDiff(stretchStart, rowStart)*dis+dit+1;
+					colStart = rowStart.diffDays(stretchEnd)*dis+dit+1;
+					colEnd = rowStart.diffDays(stretchStart)*dis+dit+1;
 				}else{
-					colStart = dayDiff(stretchStart, rowStart);
-					colEnd = dayDiff(stretchEnd, rowStart);
+					colStart = rowStart.diffDays(stretchStart);
+					colEnd = rowStart.diffDays(stretchEnd);
 				}
 				dayBind(
 					renderCellOverlay(i, colStart, i, colEnd-1)
 				);
 			}
-			addDays(rowStart, 7);
-			addDays(rowEnd, 7);
+			rowStart.addWeeks(1);
+			rowEnd.addWeeks(1);
 		}
 	}
 	
@@ -335,12 +336,16 @@ function BasicView(element, calendar, viewName) {
 	
 	
 	function defaultSelectionEnd(startDate, allDay) {
-		return cloneDate(startDate);
+		return startDate.clone();
 	}
 	
 	
 	function renderSelection(startDate, endDate, allDay) {
-		renderDayOverlay(startDate, addDays(cloneDate(endDate), 1), true); // rebuild every time???
+		renderDayOverlay(
+			startDate.clone().clearTime(),
+			endDate.clone().addDays(1).clearTime(), // TODO: use util
+			true // rebuild every time???
+		);
 	}
 	
 	
@@ -352,7 +357,7 @@ function BasicView(element, calendar, viewName) {
 	function reportDayClick(date, allDay, ev) {
 		var cell = dateCell(date);
 		var _element = bodyCells[cell.row*colCnt + cell.col];
-		trigger('dayClick', _element, date, allDay, ev);
+		trigger('dayClick', _element, date.clone(), allDay, ev);
 	}
 	
 	
@@ -387,7 +392,7 @@ function BasicView(element, calendar, viewName) {
 	
 	
 	function defaultEventEnd(event) {
-		return cloneDate(event.start);
+		return event.start.clone();
 	}
 	
 	
@@ -440,7 +445,7 @@ function BasicView(element, calendar, viewName) {
 	
 	function dateCell(date) {
 		return {
-			row: Math.floor(dayDiff(date, t.visStart) / 7),
+			row: t.visStart.diffWeeks(date),
 			col: dayOfWeekCol(date.getDay())
 		};
 	}
@@ -452,7 +457,7 @@ function BasicView(element, calendar, viewName) {
 	
 	
 	function _cellDate(row, col) {
-		return addDays(cloneDate(t.visStart), row*7 + col*dis+dit);
+		return t.visStart.clone().addDays(row*7 + col*dis+dit);
 		// what about weekends in middle of week?
 	}
 	

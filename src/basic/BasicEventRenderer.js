@@ -53,8 +53,8 @@ function BasicEventRenderer() {
 	function compileSegs(events) {
 		var rowCnt = getRowCnt(),
 			colCnt = getColCnt(),
-			d1 = cloneDate(t.visStart),
-			d2 = addDays(cloneDate(d1), colCnt),
+			d1 = t.visStart.clone(),
+			d2 = d1.clone().addDays(colCnt),
 			visEventsEnds = $.map(events, exclEndDay),
 			i, row,
 			j, level,
@@ -71,8 +71,8 @@ function BasicEventRenderer() {
 					segs.push(seg);
 				}
 			}
-			addDays(d1, 7);
-			addDays(d2, 7);
+			d1.addWeeks(1);
+			d2.addWeeks(1);
 		}
 		return segs;
 	}
@@ -113,8 +113,8 @@ function BasicEventRenderer() {
 						//setOverflowHidden(true);
 						dayDelta = rowDelta*7 + colDelta * (opt('isRTL') ? -1 : 1);
 						renderDayOverlay(
-							addDays(cloneDate(event.start), dayDelta),
-							addDays(exclEndDay(event), dayDelta)
+							event.start.clone().addDays(dayDelta).clearTime(),
+							exclEndDay(event).addDays(dayDelta).clearTime()
 						);
 					}else{
 						//setOverflowHidden(false);

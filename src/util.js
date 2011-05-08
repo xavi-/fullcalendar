@@ -1,5 +1,85 @@
 
 fc.applyAll = applyAll;
+fc.Date = MightyDate;
+fc.parseDate = parseDate;
+fc.parseISO8601 = parseISO8601;
+fc.formatDate = formatDate;
+fc.formatDates = formatDates;
+
+
+var dayIDs = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+
+/* Date
+--------------------------------------------------------------------------------*/
+
+
+function skipWeekend(date, inc, excl) {
+	inc = inc || 1;
+	while (!date.getDay() || (excl && date.getDay()==1 || !excl && date.getDay()==6)) {
+		date.addDays(inc);
+	}
+	return date;
+}
+
+
+function parseTime(s) { // returns minutes since start of day
+	if (typeof s == 'number') { // an hour
+		return s * 60;
+	}
+	if (typeof s == 'object') { // a Date object
+		return s.getHours() * 60 + s.getMinutes();
+	}
+	var m = s.match(/(\d+)(?::(\d+))?\s*(\w+)?/);
+	if (m) {
+		var h = parseInt(m[1], 10);
+		if (m[3]) {
+			h %= 12;
+			if (m[3].toLowerCase().charAt(0) == 'p') {
+				h += 12;
+			}
+		}
+		return h * 60 + (m[2] ? parseInt(m[2], 10) : 0);
+	}
+}
+
+
+// TODO: change ignoreTimezone default
+function parseDate(input, ignoreTimezone) { // ignoreTimezone DEFAULTS TO TRUE!!! :(
+	// handles more than just strings
+	if (ignoreTimezone === undefined) {
+		ignoreTimezone = true;
+	}
+	if (ignoreTimezone && typeof input == 'string') {
+		input = stripTimezone(input);
+	}
+	return new MightyDate(input);
+}
+
+
+// TODO: deprecate
+function parseISO8601(input, ignoreTimezone) { // ignoreTimezone DEFAULTS TO FALSE
+	if (ignoreTimezone === undefined) {
+		ignoreTimezone = false;
+	}
+	return parseDate(input, ignoreTimezone);
+}
+
+
+function stripTimezone(s) {
+	return s.replace(/^(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(\.\d+)?)(.*)$/, '$1');
+}
+
+
+function formatDate(date, formatString, settings) {
+	return new MightyDate(date).toString(formatString, settings);
+}
+
+
+function formatDates(date1, date2, formatString, settings) {
+	return new MightyDate(date1).toString(date2, formatString, settings);
+}
+
 
 
 /* Event Date Math
@@ -10,24 +90,27 @@ function exclEndDay(event) {
 	if (event.end) {
 		return _exclEndDay(event.end, event.allDay);
 	}else{
-		return addDays(cloneDate(event.start), 1);
+		return event.start.clone().addDays(1).clearTime();
 	}
 }
 
 
 function _exclEndDay(end, allDay) {
-	end = cloneDate(end);
-	return allDay || end.getHours() || end.getMinutes() ? addDays(end, 1) : clearTime(end);
+	end = end.clone();
+	if (allDay || end.getHours() || end.getMinutes()) {
+		end.addDays(1);
+	}
+	return end.clearTime();
 }
 
 
 function segCmp(a, b) {
-	return (b.msLength - a.msLength) * 100 + (a.event.start - b.event.start);
+	return (b.msLength - a.msLength) * 100 + b.event.start.diffMilliseconds(a.event.start);
 }
 
 
 function segsCollide(seg1, seg2) {
-	return seg1.end > seg2.start && seg1.start < seg2.end;
+	return seg1.end.after(seg2.start) && seg1.start.before(seg2.end);
 }
 
 
@@ -47,16 +130,16 @@ function sliceSegs(events, visEventEnds, start, end) {
 		event = events[i];
 		eventStart = event.start;
 		eventEnd = visEventEnds[i];
-		if (eventEnd > start && eventStart < end) {
-			if (eventStart < start) {
-				segStart = cloneDate(start);
+		if (eventEnd.after(start) && eventStart.before(end)) {
+			if (eventStart.before(start)) {
+				segStart = start.clone();
 				isStart = false;
 			}else{
 				segStart = eventStart;
 				isStart = true;
 			}
-			if (eventEnd > end) {
-				segEnd = cloneDate(end);
+			if (eventEnd.after(end)) {
+				segEnd = end.clone();
 				isEnd = false;
 			}else{
 				segEnd = eventEnd;
@@ -68,7 +151,7 @@ function sliceSegs(events, visEventEnds, start, end) {
 				end: segEnd,
 				isStart: isStart,
 				isEnd: isEnd,
-				msLength: segEnd - segStart
+				msLength: segStart.diffMilliseconds(segEnd)
 			});
 		}
 	} 

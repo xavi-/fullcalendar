@@ -102,7 +102,7 @@ function View(element, calendar, viewName) {
 	
 	// returns a Date object for an event's end
 	function eventEnd(event) {
-		return event.end ? cloneDate(event.end) : defaultEventEnd(event);
+		return event.end ? event.end.clone() : defaultEventEnd(event);
 	}
 	
 	
@@ -232,9 +232,9 @@ function View(element, calendar, viewName) {
 			if (allDay !== undefined) {
 				e.allDay = allDay;
 			}
-			addMinutes(addDays(e.start, dayDelta, true), minuteDelta);
+			e.start.addDays(dayDelta).addMinutes(minuteDelta);
 			if (e.end) {
-				e.end = addMinutes(addDays(e.end, dayDelta, true), minuteDelta);
+				e.end.addDays(dayDelta).addMinutes(minuteDelta);
 			}
 			normalizeEvent(e, options);
 		}
@@ -245,7 +245,7 @@ function View(element, calendar, viewName) {
 		minuteDelta = minuteDelta || 0;
 		for (var e, len=events.length, i=0; i<len; i++) {
 			e = events[i];
-			e.end = addMinutes(addDays(eventEnd(e), dayDelta, true), minuteDelta);
+			e.end = eventEnd(e).addDays(dayDelta).addMinutes(minuteDelta);
 			normalizeEvent(e, options);
 		}
 	}

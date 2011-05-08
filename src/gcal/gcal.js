@@ -13,9 +13,7 @@
 
 
 var fc = $.fullCalendar;
-var formatDate = fc.formatDate;
-var parseISO8601 = fc.parseISO8601;
-var addDays = fc.addDays;
+var parseDate = fc.parseDate;
 var applyAll = fc.applyAll;
 
 
@@ -42,8 +40,8 @@ function transformOptions(sourceOptions, start, end) {
 
 	var success = sourceOptions.success;
 	var data = $.extend({}, sourceOptions.data || {}, {
-		'start-min': formatDate(start, 'u'),
-		'start-max': formatDate(end, 'u'),
+		'start-min': start.toString('u'),
+		'start-max': end.toString('u'),
 		'singleevents': true,
 		'max-results': 9999
 	});
@@ -64,8 +62,8 @@ function transformOptions(sourceOptions, start, end) {
 			if (data.feed.entry) {
 				$.each(data.feed.entry, function(i, entry) {
 					var startStr = entry['gd$when'][0]['startTime'];
-					var start = parseISO8601(startStr, true);
-					var end = parseISO8601(entry['gd$when'][0]['endTime'], true);
+					var start = parseDate(startStr, true); // true for ignoreTimezone
+					var end = parseDate(entry['gd$when'][0]['endTime'], true); // true for ignoreTimezone
 					var allDay = startStr.indexOf('T') == -1;
 					var url;
 					$.each(entry.link, function(i, link) {
@@ -77,7 +75,7 @@ function transformOptions(sourceOptions, start, end) {
 						}
 					});
 					if (allDay) {
-						addDays(end, -1); // make inclusive
+						end.addDays(-1); // make inclusive
 					}
 					events.push({
 						id: entry['gCal$uid']['value'],

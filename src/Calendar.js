@@ -22,8 +22,8 @@ function Calendar(element, options, eventSources) {
 	t.today = today;
 	t.gotoDate = gotoDate;
 	t.incrementDate = incrementDate;
-	t.formatDate = function(format, date) { return formatDate(format, date, options) };
-	t.formatDates = function(format, date1, date2) { return formatDates(format, date1, date2, options) };
+	t.formatDate = function(date, format) { return date.toString(format, options) };
+	t.formatDates = function(date1, date2, format) { return date1.toString(date2, format, options) };
 	t.getDate = getDate;
 	t.getView = getView;
 	t.option = option;
@@ -49,7 +49,7 @@ function Calendar(element, options, eventSources) {
 	var absoluteViewElement;
 	var resizeUID = 0;
 	var ignoreWindowResize = 0;
-	var date = new Date();
+	var date = new MightyDate();
 	var events = [];
 	var _dragElement;
 	
@@ -59,7 +59,13 @@ function Calendar(element, options, eventSources) {
 	-----------------------------------------------------------------------------*/
 	
 	
-	setYMD(date, options.year, options.month, options.date);
+	if (options.year) {
+		date = new MightyDate(
+			options.year,
+			options.month || 0,
+			options.date || 1
+		);
+	}
 	
 	
 	function render(inc) {
@@ -198,7 +204,9 @@ function Calendar(element, options, eventSources) {
 			}
 			
 			var forceEventRender = false;
-			if (!currentView.start || inc || date < currentView.start || date >= currentView.end) {
+			if (
+				!currentView.start || inc || date.before(currentView.start) || !date.before(currentView.end)
+			) {
 				// view must render an entire new date range (and refetch/render events)
 				currentView.render(date, inc || 0); // responsible for clearing events
 				setSize(true);
@@ -221,8 +229,8 @@ function Calendar(element, options, eventSources) {
 			elementOuterWidth = element.outerWidth();
 			
 			header.updateTitle(currentView.title);
-			var today = new Date();
-			if (today >= currentView.start && today < currentView.end) {
+			var today = new MightyDate();
+			if (!today.before(currentView.start) && today.before(currentView.end)) { // within range
 				header.disableButton('today');
 			}else{
 				header.enableButton('today');
@@ -391,28 +399,32 @@ function Calendar(element, options, eventSources) {
 	
 	
 	function prevYear() {
-		addYears(date, -1);
+		date.addYears(-1, true);
 		renderView();
 	}
 	
 	
 	function nextYear() {
-		addYears(date, 1);
+		date.addYears(1, true);
 		renderView();
 	}
 	
 	
 	function today() {
-		date = new Date();
+		date = new MightyDate();
 		renderView();
 	}
 	
 	
 	function gotoDate(year, month, dateOfMonth) {
-		if (year instanceof Date) {
-			date = cloneDate(year); // provided 1 argument, a Date
+		if (typeof year == 'object') {
+			date = new MightyDate(year); // provided 1 argument, a Date or MightyDate
 		}else{
-			setYMD(date, year, month, dateOfMonth);
+			date = new MightyDate(
+				year,
+				month || 0,
+				dateOfMonth || 1
+			);
 		}
 		renderView();
 	}
@@ -420,20 +432,20 @@ function Calendar(element, options, eventSources) {
 	
 	function incrementDate(years, months, days) {
 		if (years !== undefined) {
-			addYears(date, years);
+			date.addYears(years, true);
 		}
 		if (months !== undefined) {
-			addMonths(date, months);
+			date.addMonths(months, true);
 		}
 		if (days !== undefined) {
-			addDays(date, days);
+			date.addDays(days);
 		}
 		renderView();
 	}
 	
 	
 	function getDate() {
-		return cloneDate(date);
+		return date.clone();
 	}
 	
 	

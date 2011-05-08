@@ -53,7 +53,7 @@ function EventManager(options, _sources) {
 	
 	
 	function isFetchNeeded(start, end) {
-		return !rangeStart || start < rangeStart || end > rangeEnd;
+		return !rangeStart || start.before(rangeStart) || end.after(rangeEnd);
 	}
 	
 	
@@ -94,7 +94,7 @@ function EventManager(options, _sources) {
 		var fetchers = fc.sourceFetchers;
 		var res;
 		for (i=0; i<fetchers.length; i++) {
-			res = fetchers[i](source, rangeStart, rangeEnd, callback);
+			res = fetchers[i](source, rangeStart.clone(), rangeEnd.clone(), callback);
 			if (res === true) {
 				// the fetcher is in charge. made its own async request
 				return;
@@ -109,7 +109,7 @@ function EventManager(options, _sources) {
 		if (events) {
 			if ($.isFunction(events)) {
 				pushLoading();
-				events(cloneDate(rangeStart), cloneDate(rangeEnd), function(events) {
+				events(rangeStart.clone(), rangeEnd.clone(), function(events) {
 					callback(events);
 					popLoading();
 				});
@@ -208,22 +208,23 @@ function EventManager(options, _sources) {
 	-----------------------------------------------------------------------------*/
 	
 	
-	function updateEvent(event) { // update an existing event
+	function updateEvent(event) { // update an existing event // TODO: test thoroughly
 		var i, len = cache.length, e,
 			defaultEventEnd = getView().defaultEventEnd, // getView???
-			startDelta = event.start - event._start,
-			endDelta = event.end ?
-				(event.end - (event._end || defaultEventEnd(event))) // event._end would be null if event.end
-				: 0;                                                      // was null and event was just resized
+			startDelta = event._start.diffMilliseconds(event.start),
+			endDelta =
+				event.end ?
+				(event._end || defaultEventEnd(event)).diffMilliseconds(event.end) : // event._end would be null if event.end
+				0;                                                                   // was null and event was just resized
 		for (i=0; i<len; i++) {
 			e = cache[i];
 			if (e._id == event._id && e != event) {
-				e.start = new Date(+e.start + startDelta);
+				e.start.addMilliseconds(startDelta);
 				if (event.end) {
 					if (e.end) {
-						e.end = new Date(+e.end + endDelta);
+						e.end.addMilliseconds(endDelta);
 					}else{
-						e.end = new Date(+defaultEventEnd(e) + endDelta);
+						e.end = defaultEventEnd(e).addMilliseconds(endDelta);
 					}
 				}else{
 					e.end = null;
@@ -334,12 +335,12 @@ function EventManager(options, _sources) {
 			}
 			delete event.date;
 		}
-		event._start = cloneDate(event.start = parseDate(event.start, ignoreTimezone));
+		event._start = (event.start = parseDate(event.start, ignoreTimezone)).clone();
 		event.end = parseDate(event.end, ignoreTimezone);
-		if (event.end && event.end <= event.start) {
+		if (event.end && !event.end.after(event.start)) {
 			event.end = null;
 		}
-		event._end = event.end ? cloneDate(event.end) : null;
+		event._end = event.end ? event.end.clone() : null;
 		if (event.allDay === undefined) {
 			event.allDay = firstDefined(source.allDayDefault, options.allDayDefault);
 		}

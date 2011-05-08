@@ -60,7 +60,7 @@ function SelectionManager() {
 	
 	function reportSelection(startDate, endDate, allDay, ev) {
 		selected = true;
-		trigger('select', null, startDate, endDate, allDay, ev);
+		trigger('select', null, startDate.clone(), endDate.clone(), allDay, ev);
 	}
 	
 	
@@ -85,7 +85,7 @@ function SelectionManager() {
 			$(document).one('mouseup', function(ev) {
 				hoverListener.stop();
 				if (dates) {
-					if (+dates[0] == +dates[1]) {
+					if (dates[0].equals(dates[1])) {
 						reportDayClick(dates[0], true, ev);
 					}
 					reportSelection(dates[0], dates[1], true, ev);

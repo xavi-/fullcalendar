@@ -22,14 +22,14 @@ function BasicDayView(element, calendar) {
 	
 	function render(date, delta) {
 		if (delta) {
-			addDays(date, delta);
+			date.addDays(delta);
 			if (!opt('weekends')) {
 				skipWeekend(date, delta < 0 ? -1 : 1);
 			}
 		}
 		t.title = formatDate(date, opt('titleFormat'));
-		t.start = t.visStart = cloneDate(date, true);
-		t.end = t.visEnd = addDays(cloneDate(t.start), 1);
+		t.start = t.visStart = date.clone().clearTime();
+		t.end = t.visEnd = t.start.clone().addDays(1);
 		renderBasic(1, 1, 1, false);
 	}
 	

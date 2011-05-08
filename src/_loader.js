@@ -42,7 +42,7 @@ js('main.js');
 js('Calendar.js');
 js('Header.js');
 js('EventManager.js');
-js('date_util.js');
+js('mightydate.js');
 js('util.js');
 
 js('basic/MonthView.js');

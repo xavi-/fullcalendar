@@ -19,12 +19,12 @@ function AgendaWeekView(element, calendar) {
 	
 	function render(date, delta) {
 		if (delta) {
-			addDays(date, delta * 7);
+			date.addWeeks(delta);
 		}
-		var start = addDays(cloneDate(date), -((date.getDay() - opt('firstDay') + 7) % 7));
-		var end = addDays(cloneDate(start), 7);
-		var visStart = cloneDate(start);
-		var visEnd = cloneDate(end);
+		var start = date.clone().clearTime().addDays(-((date.getDay() - opt('firstDay') + 7) % 7));
+		var end = start.clone().addWeeks(1);
+		var visStart = start.clone();
+		var visEnd = end.clone();
 		var weekends = opt('weekends');
 		if (!weekends) {
 			skipWeekend(visStart);
@@ -32,7 +32,7 @@ function AgendaWeekView(element, calendar) {
 		}
 		t.title = formatDates(
 			visStart,
-			addDays(cloneDate(visEnd), -1),
+			visEnd.clone().addDays(-1),
 			opt('titleFormat')
 		);
 		t.start = start;
