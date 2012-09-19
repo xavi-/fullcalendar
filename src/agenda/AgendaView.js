@@ -14,7 +14,8 @@ setDefaults({
 	},
 	minTime: 0,
 	maxTime: 24,
-	"secondary-agenda-timezone": 0
+	"secondary-agenda-timezone": 0,
+	"timezone-headers": { agendaWeek: { primary: $(), secondary: $() } }
 });
 
 
@@ -59,6 +60,7 @@ function AgendaView(element, calendar, viewName) {
 	t.reportDayClick = reportDayClick; // selection mousedown hack
 	t.dragStart = dragStart;
 	t.dragStop = dragStop;
+	t.updateTimezoneHeader = updateTimezoneHeader;
 	
 	
 	// imports
@@ -177,8 +179,8 @@ function AgendaView(element, calendar, viewName) {
 			"<table style='width:100%' class='fc-agenda-days fc-border-separate' cellspacing='0'>" +
 			"<thead>" +
 			"<tr>" +
-			"<th class='fc-agenda-axis fc-second-timezone " + headerClass + "'>&nbsp;</th>" +
-			"<th class='fc-agenda-axis " + headerClass + "'>&nbsp;</th>";
+			"<th class='fc-agenda-axis fc-second-timezone fc-timezone-header " + headerClass + "'>&nbsp;</th>" +
+			"<th class='fc-agenda-axis fc-first-timezone fc-timezone-header " + headerClass + "'>&nbsp;</th>";
 		for (i=0; i<colCnt; i++) {
 			s +=
 				"<th class='fc- fc-col" + i + ' ' + headerClass + "'/>"; // fc- needed for setDayID
@@ -190,7 +192,7 @@ function AgendaView(element, calendar, viewName) {
 			"<tbody>" +
 			"<tr>" +
 			"<th class='fc-agenda-axis fc-second-timezone " + headerClass + "'>&nbsp;</th>" +
-			"<th class='fc-agenda-axis " + headerClass + "'>&nbsp;</th>";
+			"<th class='fc-agenda-axis fc-first-timezone " + headerClass + "'>&nbsp;</th>";
 		for (i=0; i<colCnt; i++) {
 			s +=
 				"<td class='fc- fc-col" + i + ' ' + contentClass + "'>" + // fc- needed for setDayID
@@ -235,7 +237,7 @@ function AgendaView(element, calendar, viewName) {
 				"<table style='width:100%' class='fc-agenda-allday' cellspacing='0'>" +
 				"<tr>" +
 				"<th class='" + headerClass + " fc-agenda-axis fc-second-timezone'>" + opt('allDayText') + "</th>" +
-				"<th class='" + headerClass + " fc-agenda-axis'>" + opt('allDayText') + "</th>" +
+				"<th class='" + headerClass + " fc-agenda-axis fc-first-timezone'>" + opt('allDayText') + "</th>" +
 				"<td>" +
 				"<div class='fc-day-content'><div style='position:relative'/></div>" +
 				"</td>" +
@@ -286,7 +288,7 @@ function AgendaView(element, calendar, viewName) {
 			s +=
 				"<tr class='fc-slot" + i + ' ' + (!minutes ? '' : 'fc-minor') + "'>" +
 				"<th class='fc-agenda-axis fc-timezone-time fc-second-timezone " + headerClass + "'>&nbsp;</th>" +
-				"<th class='fc-agenda-axis " + headerClass + "'>" +
+				"<th class='fc-agenda-axis fc-first-timezone " + headerClass + "'>" +
 				((!slotNormal || !minutes) ? formatDate(d, opt('axisFormat')) : '&nbsp;') +
 				"</th>" +
 				"<td class='" + contentClass + "'>" +
@@ -329,6 +331,17 @@ function AgendaView(element, calendar, viewName) {
 		}
 	}
 	
+
+
+	function updateTimezoneHeader() {
+		var headers = opt("timezone-headers");
+		$(".fc-timezone-header", t.element)
+			.empty()
+			.filter(".fc-first-timezone").append(headers.primary || $()).end()
+			.filter(".fc-second-timezone").append(headers.secondary || $());
+
+	}
+
 	
 	
 	function setHeight(height, dateChanged) {

@@ -457,6 +457,9 @@ function Calendar(element, options, eventSources) {
 		} else if(name == "secondary-agenda-timezone") {
 			options[name] = value;
 			render();
+		} else if(name == "timezone-headers") {
+			options[name] = { agendaWeek: value };
+			currentView.updateTimezoneHeader();
 		}
 	}
 	
