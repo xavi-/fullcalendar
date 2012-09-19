@@ -13,7 +13,8 @@ setDefaults({
 		agenda: .5
 	},
 	minTime: 0,
-	maxTime: 24
+	maxTime: 24,
+	"secondary-agenda-timezone": 0
 });
 
 
@@ -176,6 +177,7 @@ function AgendaView(element, calendar, viewName) {
 			"<table style='width:100%' class='fc-agenda-days fc-border-separate' cellspacing='0'>" +
 			"<thead>" +
 			"<tr>" +
+			"<th class='fc-agenda-axis fc-second-timezone " + headerClass + "'>&nbsp;</th>" +
 			"<th class='fc-agenda-axis " + headerClass + "'>&nbsp;</th>";
 		for (i=0; i<colCnt; i++) {
 			s +=
@@ -187,6 +189,7 @@ function AgendaView(element, calendar, viewName) {
 			"</thead>" +
 			"<tbody>" +
 			"<tr>" +
+			"<th class='fc-agenda-axis fc-second-timezone " + headerClass + "'>&nbsp;</th>" +
 			"<th class='fc-agenda-axis " + headerClass + "'>&nbsp;</th>";
 		for (i=0; i<colCnt; i++) {
 			s +=
@@ -205,7 +208,7 @@ function AgendaView(element, calendar, viewName) {
 			"</table>";
 		dayTable = $(s).appendTo(element);
 		dayHead = dayTable.find('thead');
-		dayHeadCells = dayHead.find('th').slice(1, -1);
+		dayHeadCells = dayHead.find('th').slice(2, -1);
 		dayBody = dayTable.find('tbody');
 		dayBodyCells = dayBody.find('td').slice(0, -1);
 		dayBodyCellInners = dayBodyCells.find('div.fc-day-content div');
@@ -231,6 +234,7 @@ function AgendaView(element, calendar, viewName) {
 			s =
 				"<table style='width:100%' class='fc-agenda-allday' cellspacing='0'>" +
 				"<tr>" +
+				"<th class='" + headerClass + " fc-agenda-axis fc-second-timezone'>" + opt('allDayText') + "</th>" +
 				"<th class='" + headerClass + " fc-agenda-axis'>" + opt('allDayText') + "</th>" +
 				"<td>" +
 				"<div class='fc-day-content'><div style='position:relative'/></div>" +
@@ -281,6 +285,7 @@ function AgendaView(element, calendar, viewName) {
 			minutes = d.getMinutes();
 			s +=
 				"<tr class='fc-slot" + i + ' ' + (!minutes ? '' : 'fc-minor') + "'>" +
+				"<th class='fc-agenda-axis fc-timezone-time fc-second-timezone " + headerClass + "'>&nbsp;</th>" +
 				"<th class='fc-agenda-axis " + headerClass + "'>" +
 				((!slotNormal || !minutes) ? formatDate(d, opt('axisFormat')) : '&nbsp;') +
 				"</th>" +
@@ -369,6 +374,7 @@ function AgendaView(element, calendar, viewName) {
 				}),
 			axisWidth
 		);
+		if(opt("secondary-agenda-timezone")) { axisWidth *= 2; }
 		
 		var slotTableWidth = slotScroller[0].clientWidth; // needs to be done after axisWidth (for IE7)
 		//slotTable.width(slotTableWidth);

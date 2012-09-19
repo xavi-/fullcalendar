@@ -66,6 +66,8 @@ function AgendaEventRenderer() {
 				slotEvents.push(events[i]);
 			}
 		}
+
+		updateTimezoneCol();
 		if (opt('allDaySlot')) {
 			renderDaySegs(compileDaySegs(dayEvents), modifiedEventId);
 			setHeight(); // no params means set to viewHeight
@@ -81,6 +83,23 @@ function AgendaEventRenderer() {
 	}
 	
 	
+	function updateTimezoneCol() {
+		var minMinute = parseTime(opt('minTime'));
+		var minInc = opt('slotMinutes');
+		var timezoneOffset = opt('secondary-agenda-timezone');
+
+		t.element
+			.find(".fc-second-timezone").toggle(!!opt("secondary-agenda-timezone")).end()
+			.find(".fc-timezone-time").each(function(idx) {
+				var minD = addMinutes(zeroDate(), minMinute);
+				var dispD = addMinutes(minD, minInc * idx + timezoneOffset);
+
+				if(dispD.getMinutes() !== 0) { $(this).text(""); }
+				else { $(this).text(formatDate(dispD, opt('axisFormat'))); }
+			});
+	}
+
+
 	function compileDaySegs(events) {
 		var levels = stackSegs(sliceSegs(events, $.map(events, exclEndDay), t.visStart, t.visEnd)),
 			i, levelCnt=levels.length, level,
