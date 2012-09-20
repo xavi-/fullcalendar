@@ -14,6 +14,7 @@ setDefaults({
 	},
 	minTime: 0,
 	maxTime: 24,
+	"primary-agenda-timezone": 0,
 	"secondary-agenda-timezone": 0,
 	"timezone-headers": { agendaWeek: { primary: $(), secondary: $() } }
 });
@@ -288,7 +289,7 @@ function AgendaView(element, calendar, viewName) {
 			s +=
 				"<tr class='fc-slot" + i + ' ' + (!minutes ? '' : 'fc-minor') + "'>" +
 				"<th class='fc-agenda-axis fc-timezone-time fc-second-timezone " + headerClass + "'>&nbsp;</th>" +
-				"<th class='fc-agenda-axis fc-first-timezone " + headerClass + "'>" +
+				"<th class='fc-agenda-axis fc-timezone-time fc-first-timezone " + headerClass + "'>" +
 				((!slotNormal || !minutes) ? formatDate(d, opt('axisFormat')) : '&nbsp;') +
 				"</th>" +
 				"<td class='" + contentClass + "'>" +

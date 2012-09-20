@@ -454,7 +454,7 @@ function Calendar(element, options, eventSources) {
 		if (name == 'height' || name == 'contentHeight' || name == 'aspectRatio') {
 			options[name] = value;
 			updateSize();
-		} else if(name == "secondary-agenda-timezone") {
+		} else if(name == "primary-agenda-timezone" || name == "secondary-agenda-timezone") {
 			options[name] = value;
 			render();
 		} else if(name == "timezone-headers") {

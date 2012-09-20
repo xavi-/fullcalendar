@@ -86,17 +86,27 @@ function AgendaEventRenderer() {
 	function updateTimezoneCol() {
 		var minMinute = parseTime(opt('minTime'));
 		var minInc = opt('slotMinutes');
-		var timezoneOffset = opt('secondary-agenda-timezone');
+		var primeTimezoneOffset = opt('primary-agenda-timezone');
+		var secondTimezoneOffset = opt('secondary-agenda-timezone');
 
 		t.element
-			.find(".fc-second-timezone").toggle(!!opt("secondary-agenda-timezone")).end()
-			.find(".fc-timezone-time").each(function(idx) {
+			.find(".fc-first-timezone.fc-timezone-time").each(function(idx) {
 				var minD = addMinutes(zeroDate(), minMinute);
-				var dispD = addMinutes(minD, minInc * idx + timezoneOffset);
+				var dispD = addMinutes(minD, minInc * idx + primeTimezoneOffset);
 
 				if(dispD.getMinutes() !== 0) { $(this).text(""); }
 				else { $(this).text(formatDate(dispD, opt('axisFormat'))); }
-			});
+			}).end()
+			.find(".fc-second-timezone")
+				.toggle(!!opt("secondary-agenda-timezone"))
+				.filter(".fc-timezone-time").each(function(idx) {
+					var minD = addMinutes(zeroDate(), minMinute);
+					var dispD = addMinutes(minD, minInc * idx + secondTimezoneOffset);
+
+					if(dispD.getMinutes() !== 0) { $(this).text(""); }
+					else { $(this).text(formatDate(dispD, opt('axisFormat'))); }
+				})
+		;
 	}
 
 
