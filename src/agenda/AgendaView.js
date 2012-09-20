@@ -140,6 +140,7 @@ function AgendaView(element, calendar, viewName) {
 		updateOptions();
 		if (!dayTable) {
 			buildSkeleton();
+			updateTimezoneHeader();
 		}else{
 			clearEvents();
 		}
