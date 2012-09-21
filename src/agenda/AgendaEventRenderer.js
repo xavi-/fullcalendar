@@ -86,8 +86,9 @@ function AgendaEventRenderer() {
 	function updateTimezoneCol() {
 		var minMinute = parseTime(opt('minTime'));
 		var minInc = opt('slotMinutes');
-		var primeTimezoneOffset = opt('primary-agenda-timezone');
-		var secondTimezoneOffset = opt('secondary-agenda-timezone');
+		var browserOffset = (new Date()).getTimezoneOffset();
+		var primeTimezoneOffset = browserOffset - opt('primary-agenda-timezone');
+		var secondTimezoneOffset = browserOffset - opt('secondary-agenda-timezone');
 
 		t.element
 			.find(".fc-first-timezone.fc-timezone-time").each(function(idx) {
@@ -98,8 +99,10 @@ function AgendaEventRenderer() {
 				else { $(this).text(formatDate(dispD, opt('axisFormat'))); }
 			}).end()
 			.find(".fc-second-timezone")
-				.toggle(!!opt("secondary-agenda-timezone"))
+				.toggle(Number.isFinite(secondTimezoneOffset))
 				.filter(".fc-timezone-time").each(function(idx) {
+					if(!Number.isFinite(secondTimezoneOffset)) { return; }
+
 					var minD = addMinutes(zeroDate(), minMinute);
 					var dispD = addMinutes(minD, minInc * idx + secondTimezoneOffset);
 

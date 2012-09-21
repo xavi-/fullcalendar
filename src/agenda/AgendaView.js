@@ -14,8 +14,8 @@ setDefaults({
 	},
 	minTime: 0,
 	maxTime: 24,
-	"primary-agenda-timezone": 0,
-	"secondary-agenda-timezone": 0,
+	"primary-agenda-timezone": (new Date()).getTimezoneOffset(),
+	"secondary-agenda-timezone": Number.NaN,
 	"timezone-headers": { agendaWeek: { primary: $(), secondary: $() } }
 });
 
@@ -389,7 +389,9 @@ function AgendaView(element, calendar, viewName) {
 				}),
 			axisWidth
 		);
-		if(opt("secondary-agenda-timezone")) { axisWidth *= 2; }
+		if(Number.isFinite(opt("secondary-agenda-timezone"))) {
+			axisWidth *= 2;
+		}
 		
 		var slotTableWidth = slotScroller[0].clientWidth; // needs to be done after axisWidth (for IE7)
 		//slotTable.width(slotTableWidth);

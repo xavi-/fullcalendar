@@ -455,8 +455,11 @@ function Calendar(element, options, eventSources) {
 			options[name] = value;
 			updateSize();
 		} else if(name == "primary-agenda-timezone" || name == "secondary-agenda-timezone") {
+			if(option[name] === value) { return; }
+
 			options[name] = value;
 			render();
+			$(_element).trigger(name + "-change", [ value ]);
 		} else if(name == "timezone-headers") {
 			options[name] = { agendaWeek: value };
 			currentView.updateTimezoneHeader();
