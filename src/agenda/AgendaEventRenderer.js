@@ -87,23 +87,24 @@ function AgendaEventRenderer() {
 		var minMinute = parseTime(opt('minTime'));
 		var minInc = opt('slotMinutes');
 		var browserOffset = (new Date()).getTimezoneOffset();
-		var secondTimezoneOffset = browserOffset - opt('secondary-agenda-timezone');
+		var primaryTimezoneOffset = browserOffset - opt('primary-agenda-timezone');
+		var secondaryTimezoneOffset = browserOffset - opt('secondary-agenda-timezone');
 
 		t.element
 			.find(".fc-first-timezone.fc-timezone-time").each(function(idx) {
 				var minD = addMinutes(zeroDate(), minMinute);
 				var dispD = addMinutes(minD, minInc * idx);
 
-				if(dispD.getMinutes() !== 0) { $(this).text(""); }
+				if(dispD.getMinutes() !== primaryTimezoneOffset % 60) { $(this).text(""); }
 				else { $(this).text(formatDate(dispD, opt('axisFormat'))); }
 			}).end()
 			.find(".fc-second-timezone")
-				.toggle(Number.isFinite(secondTimezoneOffset))
+				.toggle(Number.isFinite(secondaryTimezoneOffset))
 				.filter(".fc-timezone-time").each(function(idx) {
-					if(!Number.isFinite(secondTimezoneOffset)) { return; }
+					if(!Number.isFinite(secondaryTimezoneOffset)) { return; }
 
 					var minD = addMinutes(zeroDate(), minMinute);
-					var dispD = addMinutes(minD, minInc * idx + secondTimezoneOffset);
+					var dispD = addMinutes(minD, minInc * idx + secondaryTimezoneOffset);
 
 					if(dispD.getMinutes() !== 0) { $(this).text(""); }
 					else { $(this).text(formatDate(dispD, opt('axisFormat'), {})); }
