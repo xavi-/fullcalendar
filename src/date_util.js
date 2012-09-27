@@ -303,22 +303,23 @@ function formatDates(date1, date2, format, options) {
 			otherDate = date2;
 		}
 		else {
+			var adjustedDate = date;
 			if(date && options["primary-agenda-timezone"]) {
 				var offset = (new Date()).getTimezoneOffset() - options["primary-agenda-timezone"];
-				date = new Date(date.getTime() + offset * 60 * 1000);
+				adjustedDate = new Date(date.getTime() + offset * 60 * 1000);
 			}
 
 			for (i2=len; i2>i; i2--) {
 				if (formatter = dateFormatters[format.substring(i, i2)]) {
-					if (date) {
-						res += formatter(date, options);
+					if (adjustedDate) {
+						res += formatter(adjustedDate, options);
 					}
 					i = i2 - 1;
 					break;
 				}
 			}
 			if (i2 == i) {
-				if (date) {
+				if (adjustedDate) {
 					res += c;
 				}
 			}
