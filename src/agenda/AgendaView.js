@@ -16,7 +16,10 @@ setDefaults({
 	maxTime: 24,
 	"primary-agenda-timezone": (new Date()).getTimezoneOffset(),
 	"secondary-agenda-timezone": Number.NaN,
-	"timezone-headers": { agendaWeek: { primary: $(), secondary: $() } }
+	"timezone-headers": {
+		agendaWeek: { primary: $(), secondary: $() },
+		agendaDay: { primary: $(), secondary: $() }
+	}
 });
 
 
@@ -336,7 +339,7 @@ function AgendaView(element, calendar, viewName) {
 
 
 	function updateTimezoneHeader() {
-		var headers = opt("timezone-headers") || {};
+		var headers = opt("timezone-headers");
 		$(".fc-timezone-header", t.element)
 			.empty()
 			.filter(".fc-first-timezone").append(headers.primary || $()).end()

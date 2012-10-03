@@ -461,7 +461,7 @@ function Calendar(element, options, eventSources) {
 			render();
 			$(_element).trigger(name + "-change", [ value ]);
 		} else if(name == "timezone-headers") {
-			options[name] = { agendaWeek: value };
+			options[name] = { agendaWeek: value, agendaDay: value };
 			currentView.updateTimezoneHeader();
 		}
 	}
