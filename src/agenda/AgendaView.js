@@ -340,8 +340,8 @@ function AgendaView(element, calendar, viewName) {
 		$(".fc-timezone-header", t.element)
 			.empty()
 			.filter(".fc-first-timezone").append(headers.primary || $()).end()
-			.filter(".fc-second-timezone").append(headers.secondary || $());
-
+			.filter(".fc-second-timezone").append(headers.secondary || $())
+		;
 	}
 
 	
