@@ -336,7 +336,7 @@ function AgendaView(element, calendar, viewName) {
 
 
 	function updateTimezoneHeader() {
-		var headers = opt("timezone-headers");
+		var headers = opt("timezone-headers") || {};
 		$(".fc-timezone-header", t.element)
 			.empty()
 			.filter(".fc-first-timezone").append(headers.primary || $()).end()
