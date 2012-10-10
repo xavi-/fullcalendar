@@ -57,10 +57,9 @@ $.fn.fullCalendar = function(options) {
 	
 };
 
-
 // function for adding/overriding defaults
 function setDefaults(d) {
 	$.extend(true, defaults, d);
 }
 
-
+$.fn.fullCalendar.setDefaults = setDefaults
