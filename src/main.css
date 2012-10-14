@@ -83,14 +83,14 @@ html .fc,
 	margin-right: 1px; /* back to normal */
 	}
 	
-.fc-header .ui-corner-right {
+.fc-header .by-corner-right {
 	margin-right: 0; /* back to normal */
 	}
 	
 /* button layering (for border precedence) */
 	
 .fc-header .fc-state-hover,
-.fc-header .ui-state-hover {
+.fc-header .by-state-hover {
 	z-index: 2;
 	}
 	
@@ -99,7 +99,7 @@ html .fc,
 	}
 
 .fc-header .fc-state-active,
-.fc-header .ui-state-active {
+.fc-header .by-state-active {
 	z-index: 4;
 	}
 	

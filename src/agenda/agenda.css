@@ -80,7 +80,7 @@
 	border-top-style: dotted;
 	}
 	
-.fc-agenda-slots tr.fc-minor th.ui-widget-header {
+.fc-agenda-slots tr.fc-minor th.by-widget-header {
 	*border-top-style: solid; /* doesn't work with background in IE6/7 */
 	}
 	
@@ -118,14 +118,14 @@
 	filter: alpha(opacity=30);
 	}
 	
-.fc .ui-draggable-dragging .fc-event-bg, /* TODO: something nicer like .fc-opacity */
+.fc .by-draggable-dragging .fc-event-bg, /* TODO: something nicer like .fc-opacity */
 .fc-select-helper .fc-event-bg {
 	display: none\9; /* for IE6/7/8. nested opacity filters while dragging don't work */
 	}
 	
 /* resizable */
 	
-.fc-event-vert .ui-resizable-s {
+.fc-event-vert .by-resizable-s {
 	bottom: 0        !important; /* importants override pre jquery ui 1.7 styles */
 	width: 100%      !important;
 	height: 8px      !important;
@@ -137,7 +137,7 @@
 	cursor: s-resize;
 	}
 	
-.fc-agenda .ui-resizable-resizing { /* TODO: better selector */
+.fc-agenda .by-resizable-resizing { /* TODO: better selector */
 	_overflow: hidden;
 	}
 	

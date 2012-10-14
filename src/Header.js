@@ -76,7 +76,7 @@ function Header(calendar, options) {
 										"<span class='fc-button-content'>" +
 											(icon ?
 												"<span class='fc-icon-wrap'>" +
-													"<span class='ui-icon ui-icon-" + icon + "'/>" +
+													"<span class='by-icon by-icon-" + icon + "'/>" +
 												"</span>" :
 												text
 												) +

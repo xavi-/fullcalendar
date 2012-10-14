@@ -81,7 +81,7 @@ function Calendar(element, options, eventSources) {
 			element.addClass('fc-rtl');
 		}
 		if (options.theme) {
-			element.addClass('ui-widget');
+			element.addClass('by-widget');
 		}
 		content = $("<div class='fc-content' style='position:relative'/>")
 			.prependTo(element);
@@ -114,7 +114,7 @@ function Calendar(element, options, eventSources) {
 		$(window).unbind('resize', windowResize);
 		header.destroy();
 		content.remove();
-		element.removeClass('fc fc-rtl ui-widget');
+		element.removeClass('fc fc-rtl by-widget');
 	}
 	
 	

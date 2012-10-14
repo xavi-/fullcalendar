@@ -61,7 +61,7 @@
 	top: 50%;
 	}
 	
-.fc-button-content .ui-icon {
+.fc-button-content .by-icon {
 	position: relative;
 	float: left;
 	margin-top: -50%;
@@ -178,7 +178,7 @@ a.fc-event {
 	padding: 0 1px;
 	}
 	
-.fc .ui-resizable-handle { /*** TODO: don't use ui-resizable anymore, change class ***/
+.fc .by-resizable-handle { /*** TODO: don't use by-resizable anymore, change class ***/
 	display: block;
 	position: absolute;
 	z-index: 99999;
@@ -199,7 +199,7 @@ a.fc-event {
 	
 /* resizable */
 	
-.fc-event-hori .ui-resizable-e {
+.fc-event-hori .by-resizable-e {
 	top: 0           !important; /* importants override pre jquery ui 1.7 styles */
 	right: -3px      !important;
 	width: 7px       !important;
@@ -207,7 +207,7 @@ a.fc-event {
 	cursor: e-resize;
 	}
 	
-.fc-event-hori .ui-resizable-w {
+.fc-event-hori .by-resizable-w {
 	top: 0           !important;
 	left: -3px       !important;
 	width: 7px       !important;
@@ -215,7 +215,7 @@ a.fc-event {
 	cursor: w-resize;
 	}
 	
-.fc-event-hori .ui-resizable-handle {
+.fc-event-hori .by-resizable-handle {
 	_padding-bottom: 14px; /* IE6 had 0 height */
 	}
 	

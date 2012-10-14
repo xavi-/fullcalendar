@@ -193,7 +193,7 @@ function DayEventRenderer() {
 				"</div>";
 			if (seg.isEnd && isEventResizable(event)) {
 				html +=
-					"<div class='ui-resizable-handle ui-resizable-" + (rtl ? 'w' : 'e') + "'>" +
+					"<div class='by-resizable-handle by-resizable-" + (rtl ? 'w' : 'e') + "'>" +
 					"&nbsp;&nbsp;&nbsp;" + // makes hit area a lot better for IE6/7
 					"</div>";
 			}
@@ -386,7 +386,7 @@ function DayEventRenderer() {
 	function resizableDayEvent(event, element, seg) {
 		var rtl = opt('isRTL');
 		var direction = rtl ? 'w' : 'e';
-		var handle = element.find('div.ui-resizable-' + direction);
+		var handle = element.find('div.by-resizable-' + direction);
 		var isResizing = false;
 		
 		// TODO: look into using jquery-ui mouse widget for this stuff

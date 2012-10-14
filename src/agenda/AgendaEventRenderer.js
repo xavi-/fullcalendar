@@ -349,7 +349,7 @@ function AgendaEventRenderer() {
 			"</div>"; // close inner
 		if (seg.isEnd && isEventResizable(event)) {
 			html +=
-				"<div class='ui-resizable-handle ui-resizable-s'>=</div>";
+				"<div class='by-resizable-handle by-resizable-s'>=</div>";
 		}
 		html +=
 			"</" + (url ? "a" : "div") + ">";
@@ -587,7 +587,7 @@ function AgendaEventRenderer() {
 		var slotHeight = getSlotHeight();
 		eventElement.resizable({
 			handles: {
-				s: 'div.ui-resizable-s'
+				s: 'div.by-resizable-s'
 			},
 			grid: slotHeight,
 			start: function(ev, ui) {
