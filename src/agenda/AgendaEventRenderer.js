@@ -99,9 +99,9 @@ function AgendaEventRenderer() {
 				else { $(this).text(formatDate(dispD, opt('axisFormat'))); }
 			}).end()
 			.find(".fc-second-timezone")
-				.toggle(Number.isFinite(secondaryTimezoneOffset))
+				.toggle(isFinite(secondaryTimezoneOffset))
 				.filter(".fc-timezone-time").each(function(idx) {
-					if(!Number.isFinite(secondaryTimezoneOffset)) { return; }
+					if(!isFinite(secondaryTimezoneOffset)) { return; }
 
 					var minD = addMinutes(zeroDate(), minMinute);
 					var dispD = addMinutes(minD, minInc * idx + secondaryTimezoneOffset);

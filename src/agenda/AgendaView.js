@@ -392,7 +392,7 @@ function AgendaView(element, calendar, viewName) {
 				}),
 			axisWidth
 		);
-		if(Number.isFinite(opt("secondary-agenda-timezone"))) {
+		if(isFinite(opt("secondary-agenda-timezone"))) {
 			axisWidth *= 2;
 		}
 		
