@@ -468,6 +468,9 @@ function Calendar(element, options, eventSources) {
 	
 	
 	function trigger(name, thisObj) {
+		var args = Array.prototype.slice.call(arguments, 2);
+		$(_element).trigger(name, args);
+
 		if (options[name]) {
 			return options[name].apply(
 				thisObj || _element,
